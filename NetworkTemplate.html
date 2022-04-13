@@ -1,0 +1,60 @@
+<h1 id="network-forensic-analysis-report">Network Forensic Analysis Report</h1>
+<h2 id="time-thieves">Time Thieves</h2>
+<p>You must inspect your traffic capture to answer the following questions:</p>
+<ol type="1">
+<li><p>What is the domain name of the users’ custom site?</p>
+<p><code>Domain Name: frank-n-ted.com</code></p></li>
+<li><p>What is the IP address of the Domain Controller (DC) of the Active Directory network?</p>
+<p><code>ip.src== 10.6.12.0/24 &amp;&amp; dns</code></p>
+<figure>
+<img src="images/frank_ted_DC.png" alt="" /><figcaption>frank-n-ted-dc.frank-n-ted.com</figcaption>
+</figure>
+<figure>
+<img src="images/frank_ted_DC_IP.png" alt="" /><figcaption>frank-n-ted-dc.frank-n-ted.com</figcaption>
+</figure></li>
+<li><p>What is the name of the malware downloaded to the 10.6.12.203 machine?</p>
+<p><code>June11.dll</code></p>
+<figure>
+<img src="images/june11dll.png" alt="" /><figcaption>June11.dll</figcaption>
+</figure></li>
+<li><p>Upload the file to <a href="https://www.virustotal.com/gui/">VirusTotal.com</a>.</p>
+<figure>
+<img src="images/virustotal_june11dll.png" alt="" /><figcaption>June11.dll @ Virustotal</figcaption>
+</figure></li>
+<li><p>What kind of malware is this classified as?</p>
+<h2 id="classified-as-a-trojan"><code>Classified as a Trojan</code></h2></li>
+</ol>
+<h2 id="vulnerable-windows-machine">Vulnerable Windows Machine</h2>
+<ol type="1">
+<li>Find the following information about the infected Windows machine:
+<ul>
+<li>Host name: Rotterdam-PC</li>
+<li>IP address: 172.16.4.205</li>
+<li>MAC address: 00:59:07:b0:63:a4</li>
+</ul></li>
+<li>What is the username of the Windows user whose computer is infected?
+<ul>
+<li>matthijs.devries</li>
+</ul></li>
+<li>What are the IP addresses used in the actual infection traffic?
+<ul>
+<li>185.243.115.84 <img src="images/actual_infection_traffic_ip.png" /></li>
+</ul></li>
+<li>As a bonus, retrieve the desktop background of the Windows host. <img src="images/desktop.jpg" alt="User Desktop Wallpaper" /></li>
+</ol>
+<hr />
+<h2 id="illegal-downloads">Illegal Downloads</h2>
+<ol type="1">
+<li>Find the following information about the machine with IP address <code>10.0.0.201</code>:
+<ul>
+<li><p>MAC address: 00:16:17:18:66:c8</p></li>
+<li><p>Windows username: elmer.blanco</p></li>
+<li><p>OS version: Windows 10 / 11 based on browser http user agent</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">User-Agent</span>: Mozilla/5.0 (Windows NT 10.0<span class="kw">;</span> <span class="ex">Win64</span><span class="kw">;</span> <span class="ex">x64</span>) <span class="ex">AppleWebKit/537.36</span> (KHTML, like Gecko) <span class="ex">Chrome/64.0.3282.140</span> Safari/537.36 Edge/17.17134</span></code></pre></div></li>
+</ul></li>
+<li>Which torrent file did the user download?
+<ul>
+<li>ip.src == 10.0.0.201 &amp;&amp; http.request.method == GET</li>
+<li>/bt/btdownload.php?type=torrent&amp;file=Betty_Boop_Rhythm_on_the_Reservation.avi.torrent</li>
+</ul></li>
+</ol>

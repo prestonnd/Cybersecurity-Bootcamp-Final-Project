@@ -1,0 +1,60 @@
+<h1 id="blue-team-summary-of-operations">Blue Team: Summary of Operations</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li>Network Topology</li>
+<li>Description of Targets</li>
+<li>Monitoring the Targets</li>
+<li>Patterns of Traffic &amp; Behavior</li>
+<li>Suggestions for Going Further</li>
+</ul>
+<h3 id="network-topology">Network Topology</h3>
+<p>The following machines were identified on the network:</p>
+<figure>
+<img src="images/network_topology.png" alt="" /><figcaption>Network Topology</figcaption>
+</figure>
+<ul>
+<li>Network
+<ul>
+<li>Address Range: 192.168.1.2 - 192.168.1.254</li>
+<li>Netmask: 255.255.255.0 Gateway: 192.168.1.1</li>
+</ul></li>
+<li>Machines
+<ul>
+<li>IPv4: 192.168.1.105
+<ul>
+<li>OS: Linux 4.15.0-108-generic</li>
+<li>Hostname: server1</li>
+</ul></li>
+<li>IPv4: 192.168.1.100
+<ul>
+<li>OS: Linux 4.15.0-99-generic</li>
+<li>Hostname: ELK</li>
+</ul></li>
+<li>IPv4: 192.168.1.110
+<ul>
+<li>OS: Linux 3.16.0-6-amd64</li>
+<li>Hostname: target1</li>
+</ul></li>
+<li>IPv4: 192.168.1.115
+<ul>
+<li>OS: Linux 3.16.0-6-amd64</li>
+<li>Hostname: Target2</li>
+</ul></li>
+<li>IPv4: 192.168.1.90
+<ul>
+<li>OS: Linux 5.4.0-kali3-amd64</li>
+<li>Hostname: Kali <br></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="description-of-targets">Description of Targets</h3>
+<p>The target of this attack was: <code>Target 1</code> (192.168.1.110).</p>
+<p>Target 1 is an Apache web server and has SSH enabled, so ports 80 and 22 are possible ports of entry for attackers. As such, the following alerts have been implemented:</p>
+<h3 id="monitoring-the-targets">Monitoring the Targets</h3>
+<p>Traffic to these services should be carefully monitored. To this end, we have implemented the alerts below:</p>
+<h4 id="cpu-usage-monitor">CPU Usage Monitor</h4>
+<p>Alert 1 is implemented as follows: - <strong>Metric</strong>: system.process.cpu.total.pct - <strong>Threshold</strong>: IS ABOVE 0.5 FOR THE LAST 5 minutes - <strong>Vulnerability Mitigated</strong>: brute force / DDOS attack</p>
+<h4 id="http-request-size-monitor">HTTP request size monitor</h4>
+<p>Alert 2 is implemented as follows: - <strong>Metric</strong>: http.request.bytes - <strong>Threshold</strong>: IS ABOVE 3500 FOR THE LAST 1 minute - <strong>Vulnerability Mitigated</strong>: Potential download / uploading of files - <strong>Reliability</strong>: Medium - high reliability. Most standard web / http traffic will not trigger the alert.</p>
+<h4 id="excessive-http-errors">Excessive HTTP Errors</h4>
+<p>Alert 3 is implemented as follows: - <strong>Metric</strong>: http.response.status_code - <strong>Threshold</strong>: ABOVE 400 FOR THE LAST 5 minutes - <strong>Vulnerability Mitigated</strong>: Brute force http attack</p>

